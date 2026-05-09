@@ -76,7 +76,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .product-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .25s,box-shadow .25s,border-color .25s;position:relative;display:flex;flex-direction:column;box-shadow:var(--card-shadow);}
 .product-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(0,0,0,.13);border-color:#ccc;}
 .product-card.hidden{display:none;}
-.product-img-wrap{background:#000;display:flex;align-items:center;justify-content:center;height:220px;overflow:hidden;padding:12px;}
+.product-img-wrap{background:var(--offwhite);display:flex;align-items:center;justify-content:center;height:220px;overflow:hidden;padding:16px;border-bottom:1px solid var(--border);}
 .product-img-wrap img{max-width:100%;max-height:196px;object-fit:contain;transition:transform .35s;}
 .product-card:hover .product-img-wrap img{transform:scale(1.06);}
 
@@ -302,7 +302,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   #grid.cols-3{grid-template-columns:repeat(2,1fr);}
 }
 
-.product-img-wrap.white-bg{background:#f5f5f5;}
 
 
 /* ===== SIDEBAR FILTER ===== */
