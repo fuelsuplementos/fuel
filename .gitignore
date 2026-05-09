@@ -1,0 +1,23 @@
+# Backups locales (no se suben al repo)
+.local-backups/
+*.backup.html
+*.bak
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs y temporales
+*.log
+.cache/
+
+# Scripts auxiliares de Python (si vuelven)
+*.py
+__pycache__/
