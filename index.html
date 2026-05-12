@@ -89,7 +89,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .product-info{padding:20px;flex:1;display:flex;flex-direction:column;}
 .product-brand{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-dark);margin-bottom:6px;}
 .product-name{font-family:'Bebas Neue',sans-serif;font-size:23px;letter-spacing:.3px;color:var(--dark);margin-bottom:8px;line-height:1.1;}
-.product-desc{font-size:13.5px;color:#666;line-height:1.55;margin-bottom:14px;flex:1;}
+.product-desc{display:none;}
+/* Si en algún momento querés mostrarlas otra vez, reemplazá la línea de arriba por:
+   .product-desc{font-size:13.5px;color:#666;line-height:1.55;margin-bottom:14px;flex:1;} */
 
 /* discount badge */
 .disc-badge{display:inline-block;background:#e8f5c8;color:var(--accent-dark);font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px;margin-bottom:10px;}
@@ -209,12 +211,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 /* ===== Mobile ===== */
 @media(max-width:768px){
   nav{padding:0 20px;}
-  .nav-toggle{display:block;}
-  .nav-links{display:none;position:absolute;top:68px;left:0;right:0;background:#fff;flex-direction:column;padding:14px 20px;border-bottom:1.5px solid var(--border);box-shadow:0 8px 24px rgba(0,0,0,.06);gap:0;}
-  .nav-links.open{display:flex;}
-  .nav-links li{padding:0;border-bottom:1px solid var(--border);}
-  .nav-links li:last-child{border-bottom:0;}
-  .nav-links a{font-size:16px;min-height:44px;display:flex;align-items:center;width:100%;}
+  /* En mobile: solo la hamburguesa izquierda (que abre la sidebar con TODO).
+     La hamburguesa derecha (nav-toggle) y los nav-links se esconden. */
+  .nav-toggle{display:none;}
+  .nav-links{display:none;}
+  .sidebar-nav-mobile{display:block;}
 
   .hero{padding:96px 20px 60px;min-height:auto;}
   .hero-actions{gap:10px;}
@@ -323,9 +324,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .sidebar-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;padding:4px 8px;border-radius:6px;transition:background .2s,color .2s;}
 .sidebar-close:hover{color:var(--dark);background:var(--light);}
 .sidebar-body{flex:1;overflow-y:auto;padding:18px 22px;}
-.sidebar-section{margin-bottom:24px;}
+.sidebar-section{margin-bottom:20px;}
 .sidebar-section h4{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;
   color:#888;margin-bottom:12px;}
+.sidebar-section-toggle{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;padding:8px 4px;margin-bottom:8px;cursor:pointer;font-size:13px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--dark);font-family:'DM Sans',sans-serif;border-radius:8px;transition:background .15s;}
+.sidebar-section-toggle:hover{background:#fafafa;}
+.sidebar-section-toggle .chev{font-size:11px;color:#888;transition:transform .25s;line-height:1;}
+.sidebar-section-toggle[aria-expanded="false"] .chev{transform:rotate(-90deg);}
+.sidebar-section-toggle[aria-expanded="false"] + .sidebar-section-content{display:none;}
+.sidebar-section-content{padding-top:2px;}
+
+/* Sección de navegación (sólo mobile) */
+.sidebar-nav-mobile{display:none;border-top:1.5px solid var(--border);padding-top:16px;margin-top:8px;}
+.sidebar-nav-title{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#888;margin-bottom:10px;padding:0 4px;}
+.sidebar-nav-link{display:block;padding:11px 14px;border-radius:10px;color:var(--text);text-decoration:none;font-size:14.5px;font-weight:500;transition:background .15s,color .15s;margin-bottom:2px;}
+.sidebar-nav-link:hover{background:#f5f5f0;color:var(--dark);}
 .sidebar-btn{display:block;width:100%;text-align:left;padding:10px 14px;border-radius:10px;
   border:1.5px solid transparent;background:transparent;color:var(--text);
   font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;margin-bottom:4px;}
@@ -471,32 +484,48 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar" role="complementary" aria-label="Filtros">
+<aside class="sidebar" id="sidebar" role="complementary" aria-label="Menú">
   <div class="sidebar-header">
-    <h3>🔍 Filtrar</h3>
-    <button class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar filtros">✕</button>
+    <h3>Menú</h3>
+    <button class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar menú">✕</button>
   </div>
   <div class="sidebar-body">
     <div class="sidebar-section">
-      <h4>Categoría</h4>
-      <button class="sidebar-btn active" onclick="sideFilter('all','cat',this)">Todos los productos</button>
-      <button class="sidebar-btn" onclick="sideFilter('proteinas','cat',this)">💪 Proteínas</button>
-      <button class="sidebar-btn" onclick="sideFilter('creatinas','cat',this)">⚡ Creatinas</button>
-      <button class="sidebar-btn" onclick="sideFilter('snacks','cat',this)">🍫 Snacks &amp; Barras</button>
-      <button class="sidebar-btn" onclick="sideFilter('frutos','cat',this)">🥜 Frutos Secos</button>
-      <button class="sidebar-btn" onclick="sideFilter('healthy','cat',this)">🥞 Healthy Breakfast</button>
-      <button class="sidebar-btn" onclick="sideFilter('otros','cat',this)">🔥 Pre-Work &amp; Otros</button>
+      <button class="sidebar-section-toggle" type="button" aria-expanded="true" onclick="toggleSidebarSection(this)">
+        <span>📦 Productos</span><span class="chev">▾</span>
+      </button>
+      <div class="sidebar-section-content">
+        <button class="sidebar-btn active" onclick="sideFilter('all','cat',this)">Todos los productos</button>
+        <button class="sidebar-btn" onclick="sideFilter('proteinas','cat',this)">💪 Proteínas</button>
+        <button class="sidebar-btn" onclick="sideFilter('creatinas','cat',this)">⚡ Creatinas</button>
+        <button class="sidebar-btn" onclick="sideFilter('snacks','cat',this)">🍫 Snacks &amp; Barras</button>
+        <button class="sidebar-btn" onclick="sideFilter('frutos','cat',this)">🥜 Frutos Secos</button>
+        <button class="sidebar-btn" onclick="sideFilter('healthy','cat',this)">🥞 Healthy Breakfast</button>
+        <button class="sidebar-btn" onclick="sideFilter('otros','cat',this)">🔥 Pre-Work &amp; Otros</button>
+      </div>
     </div>
     <div class="sidebar-section">
-      <h4>Marca</h4>
-      <button class="sidebar-btn active" onclick="sideFilter('all','brand',this)">Todas las marcas</button>
-      <button class="sidebar-btn" onclick="sideFilter('ena','brand',this)">ENA Sport</button>
-      <button class="sidebar-btn" onclick="sideFilter('star','brand',this)">Star Nutrition</button>
-      <button class="sidebar-btn" onclick="sideFilter('granger','brand',this)">Granger Foods</button>
-      <button class="sidebar-btn" onclick="sideFilter('integra','brand',this)">Integra</button>
-      <button class="sidebar-btn" onclick="sideFilter('muecas','brand',this)">Muecas</button>
-      <button class="sidebar-btn" onclick="sideFilter('gentech','brand',this)">Gentech</button>
-      <button class="sidebar-btn" onclick="sideFilter('crudda','brand',this)">Crudda</button>
+      <button class="sidebar-section-toggle" type="button" aria-expanded="true" onclick="toggleSidebarSection(this)">
+        <span>🏷️ Marca</span><span class="chev">▾</span>
+      </button>
+      <div class="sidebar-section-content">
+        <button class="sidebar-btn active" onclick="sideFilter('all','brand',this)">Todas las marcas</button>
+        <button class="sidebar-btn" onclick="sideFilter('ena','brand',this)">ENA Sport</button>
+        <button class="sidebar-btn" onclick="sideFilter('star','brand',this)">Star Nutrition</button>
+        <button class="sidebar-btn" onclick="sideFilter('granger','brand',this)">Granger Foods</button>
+        <button class="sidebar-btn" onclick="sideFilter('integra','brand',this)">Integra</button>
+        <button class="sidebar-btn" onclick="sideFilter('muecas','brand',this)">Muecas</button>
+        <button class="sidebar-btn" onclick="sideFilter('gentech','brand',this)">Gentech</button>
+        <button class="sidebar-btn" onclick="sideFilter('crudda','brand',this)">Crudda</button>
+      </div>
+    </div>
+
+    <!-- Navegación general (sólo se ve en móvil) -->
+    <div class="sidebar-section sidebar-nav-mobile">
+      <h4 class="sidebar-nav-title">Navegación</h4>
+      <a class="sidebar-nav-link" href="#como-comprar" onclick="closeSidebar()">🛒 Cómo Comprar</a>
+      <a class="sidebar-nav-link" href="#pagos" onclick="closeSidebar()">💳 Pagos</a>
+      <a class="sidebar-nav-link" href="#contacto" onclick="closeSidebar()">📞 Contacto</a>
     </div>
   </div>
   <div class="sidebar-footer">
@@ -1835,15 +1864,14 @@ function clearFilter(type){
 }
 
 function syncSidebarButtons(){
-  document.querySelectorAll('#sidebar .sidebar-section').forEach((section,idx)=>{
-    const isCat=idx===0;
-    const active=isCat?activeCat:activeBrand;
+  document.querySelectorAll('#sidebar .sidebar-section').forEach(section=>{
     section.querySelectorAll('.sidebar-btn').forEach(b=>{
       const onclick=b.getAttribute('onclick')||'';
-      const m=onclick.match(/sideFilter\('([^']+)'/);
-      const val=m?m[1]:null;
-      const isActive=val===active;
-      b.classList.toggle('active',isActive);
+      const m=onclick.match(/sideFilter\('([^']+)','([^']+)'/);
+      if(!m) return;
+      const val=m[1], type=m[2];
+      const active = type==='cat' ? activeCat : activeBrand;
+      b.classList.toggle('active', val===active);
     });
   });
 }
@@ -2399,6 +2427,10 @@ function closeSidebar(){
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('open');
   document.body.style.overflow='';
+}
+function toggleSidebarSection(btn){
+  const expanded = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!expanded));
 }
 function sideFilter(val, type, btn){
   const sectionIdx = type==='cat' ? 1 : 2;
