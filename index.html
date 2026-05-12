@@ -28,6 +28,12 @@ html{scroll-behavior:smooth;}
 body{background:var(--white);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:68px;background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--border);}
+.nav-left{display:flex;align-items:center;gap:14px;}
+.nav-burger{background:transparent;border:0;cursor:pointer;width:38px;height:38px;border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;transition:background .2s;padding:0;}
+.nav-burger:hover{background:var(--light);}
+.nav-burger span{display:block;width:20px;height:2px;background:var(--dark);border-radius:2px;transition:transform .25s,opacity .25s;}
+.nav-burger:hover span:first-child{transform:translateY(-1px);}
+.nav-burger:hover span:last-child{transform:translateY(1px);}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--dark);text-decoration:none;}
 .logo .bolt-svg{display:inline-block;}
 .nav-links{display:flex;gap:32px;list-style:none;}
@@ -442,9 +448,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .cc-radio-row:has(input:checked){border-color:var(--accent-dark);background:#fafff0;}
 .cc-radio-row .label{font-size:13.5px;color:var(--dark);}
 .cc-radio-row .label .meta{color:#888;font-size:12px;display:block;margin-top:2px;}
-.cc-direccion{margin-top:10px;}
+.cc-direccion{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
 .cc-direccion input,.cc-textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;box-sizing:border-box;transition:border-color .2s;background:#fff;}
 .cc-direccion input:focus,.cc-textarea:focus{border-color:var(--accent-dark);}
+.cc-cp-status{font-size:13px;line-height:1.5;padding:2px 4px;min-height:20px;color:#666;}
+.cc-cp-status.loading{color:#888;}
+.cc-cp-status.ok{color:var(--accent-dark);background:#fafff0;border-radius:8px;padding:8px 12px;border:1px solid #d8e6a8;}
+.cc-cp-status.error{color:#dc2626;background:#fef2f2;border-radius:8px;padding:8px 12px;border:1px solid #fecaca;}
+.cc-cp-status strong{font-weight:700;}
 .cc-textarea{resize:vertical;min-height:64px;}
 .cc-footnote{font-size:11px;color:#aaa;text-align:center;margin-top:8px;}
 
@@ -494,7 +505,12 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
 </aside>
 
 <nav>
-  <a class="logo" href="#" aria-label="FUEL inicio">FUEL<svg class="bolt-svg" viewBox="0 0 14 22" width="18" height="28" fill="#22c55e" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-left:2px;" aria-hidden="true"><polygon points="9,0 0,13 6,13 5,22 14,9 8,9"/></svg></a>
+  <div class="nav-left">
+    <button class="nav-burger" type="button" aria-label="Abrir filtros y categorías" onclick="openSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="logo" href="#" aria-label="FUEL inicio">FUEL<svg class="bolt-svg" viewBox="0 0 14 22" width="18" height="28" fill="#22c55e" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;margin-left:2px;" aria-hidden="true"><polygon points="9,0 0,13 6,13 5,22 14,9 8,9"/></svg></a>
+  </div>
   <ul class="nav-links" id="navLinks">
     <li><a href="#productos">Productos</a></li>
     <li><a href="#como-comprar">Cómo Comprar</a></li>
@@ -964,7 +980,8 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
 
 <!-- MAGNESIO ENA -->
 <div class="product-card" data-cat="otros" data-brand="ena">
-  <div class="product-img-wrap white-bg"><img src="img/ena-magnesio-citrato.webp" alt="Magnesio ENA"></div>
+  <span class="disc-pct">-18%</span>
+  <div class="product-img-wrap"><img src="img/ena-magnesio-citrato.webp" alt="Magnesio ENA"></div>
   <div class="product-info">
     <div class="product-brand">ENA Sport</div>
     <div class="product-name">Magnesio Citrato</div>
@@ -986,7 +1003,8 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
 
         <!-- ===== ENA FISH OIL ===== -->
     <div class="product-card" data-cat="otros" data-brand="ena">
-      <div class="product-img-wrap white-bg"><img src="img/ena-fish-oil-omega-3.webp" alt="Fish Oil ENA"></div>
+      <span class="disc-pct">-14%</span>
+      <div class="product-img-wrap"><img src="img/ena-fish-oil-omega-3.webp" alt="Fish Oil ENA"></div>
       <div class="product-info">
         <div class="product-brand">ENA Sport</div>
         <div class="product-name">Fish Oil — Omega 3</div>
@@ -2057,6 +2075,9 @@ function openCartCheckout(){
   const ccCodigo=document.getElementById('ccCodigo'); if(ccCodigo) ccCodigo.value='';
   const ccObs=document.getElementById('ccObs'); if(ccObs) ccObs.value='';
   const ccDireccion=document.getElementById('ccDireccion'); if(ccDireccion) ccDireccion.value='';
+  const ccCP=document.getElementById('ccCP'); if(ccCP) ccCP.value='';
+  const ccCPStatus=document.getElementById('ccCPStatus'); if(ccCPStatus){ccCPStatus.innerHTML='';ccCPStatus.className='cc-cp-status';}
+  envioInfo=null;
   const ccDiscOk=document.getElementById('ccDiscOk'); if(ccDiscOk) ccDiscOk.style.display='none';
   const ccCoord=document.getElementById('ccEnvioCoord'); if(ccCoord) ccCoord.checked=true;
   toggleCcEnvio();
@@ -2076,51 +2097,161 @@ function closeCartCheckout(){
   document.body.style.overflow='';
 }
 
+/* ---------- Sistema de envíos ---------- */
+const ORIGIN_COORDS = { lat: -34.5887, lon: -58.3961 }; // Av. Las Heras 1425, CABA
+const ENVIO_TIERS = [
+  { maxKm: 7,  costo: 4000, label: 'Hasta 7 km' },
+  { maxKm: 40, costo: 7000, label: 'Entre 7 y 40 km' }
+];
+let envioInfo = null; // { km, costo, label } | { outOfRange: true } | null
+let cpDebounceTimer = null;
+
+function haversineKm(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function checkCP(rawCp){
+  const cp = (rawCp||'').trim();
+  envioInfo = null;
+  updateCcTotals();
+  const status = document.getElementById('ccCPStatus');
+  if(!status) return;
+  if(cp === ''){ status.innerHTML=''; status.className='cc-cp-status'; return; }
+  if(!/^\d{4}$/.test(cp)){
+    status.innerHTML='Ingresá un código postal de 4 dígitos.';
+    status.className='cc-cp-status';
+    return;
+  }
+  // Debounce 400ms para no spamear la API mientras tipea
+  clearTimeout(cpDebounceTimer);
+  status.innerHTML='⏳ Buscando código postal...';
+  status.className='cc-cp-status loading';
+  cpDebounceTimer = setTimeout(()=>fetchCPCoords(cp), 400);
+}
+
+async function fetchCPCoords(cp){
+  const status = document.getElementById('ccCPStatus');
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(cp)}&country=Argentina&format=json&limit=1`;
+    const r = await fetch(url, { headers: { 'Accept-Language': 'es' }});
+    if(!r.ok) throw new Error('http '+r.status);
+    const data = await r.json();
+    if(!data.length){
+      envioInfo = null;
+      status.innerHTML='⚠️ No encontramos ese código postal. Verificá el número o coordinamos por WhatsApp.';
+      status.className='cc-cp-status error';
+      updateCcTotals();
+      return;
+    }
+    const dest = { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+    const km = haversineKm(ORIGIN_COORDS.lat, ORIGIN_COORDS.lon, dest.lat, dest.lon);
+    if(km > 40){
+      envioInfo = { outOfRange: true, km };
+      status.innerHTML = `❌ <strong>Fuera de alcance</strong> · No realizamos envíos a tu zona (~${km.toFixed(0)} km).`;
+      status.className='cc-cp-status error';
+    } else {
+      const tier = ENVIO_TIERS.find(t => km <= t.maxKm);
+      envioInfo = { km, costo: tier.costo, label: tier.label };
+      status.innerHTML = `✅ <strong>Costo de envío: ${fmt(tier.costo)}</strong> · ${tier.label} (~${km.toFixed(0)} km) · Hasta 5 días hábiles.`;
+      status.className='cc-cp-status ok';
+    }
+    updateCcTotals();
+  } catch(e){
+    envioInfo = null;
+    status.innerHTML='⚠️ No pudimos calcular el envío automáticamente. Igual podés enviar el pedido y lo coordinamos por WhatsApp.';
+    status.className='cc-cp-status error';
+    updateCcTotals();
+  }
+}
+
 function toggleCcEnvio(){
-  const dir=document.getElementById('ccEnvioDir')?.checked;
-  const f=document.getElementById('ccDireccionField');
-  if(f) f.style.display=dir?'block':'none';
+  const dir = document.getElementById('ccEnvioDir')?.checked;
+  const f = document.getElementById('ccDireccionField');
+  if(f) f.style.display = dir ? 'flex' : 'none';
+  if(!dir){
+    envioInfo = null;
+    const cp = document.getElementById('ccCP'); if(cp) cp.value='';
+    const dirInput = document.getElementById('ccDireccion'); if(dirInput) dirInput.value='';
+    const status = document.getElementById('ccCPStatus'); if(status){status.innerHTML='';status.className='cc-cp-status';}
+  }
+  updateCcTotals();
 }
 
 function updateCcTotals(){
-  const base=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const pago=document.getElementById('ccPago')?.value||'';
-  const codigo=document.getElementById('ccCodigo')?.value.trim().toUpperCase()||'';
-  const hasCard=(pago==='debito'||pago==='credito');
-  const hasDisc=codigo===DISCOUNT_CODE;
-  const surcharge=hasCard?Math.round(base*0.05):0;
-  const sub=base+surcharge;
-  const disc=hasDisc?Math.round(sub*0.05):0;
-  const total=sub-disc;
+  const base = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const pago = document.getElementById('ccPago')?.value||'';
+  const codigo = document.getElementById('ccCodigo')?.value.trim().toUpperCase()||'';
+  const hasCard = (pago==='debito'||pago==='credito');
+  const hasDisc = codigo===DISCOUNT_CODE;
+  const surcharge = hasCard ? Math.round(base*0.05) : 0;
+  const sub = base + surcharge;
+  const disc = hasDisc ? Math.round(sub*0.05) : 0;
+  const envioCosto = (envioInfo && !envioInfo.outOfRange) ? envioInfo.costo : 0;
+  const total = sub - disc + envioCosto;
 
-  const ccDiscOk=document.getElementById('ccDiscOk');
-  if(ccDiscOk) ccDiscOk.style.display=hasDisc?'block':'none';
-  if(document.getElementById('ccCodigo')) document.getElementById('ccCodigo').style.borderColor=hasDisc?'#22c55e':'';
+  const ccDiscOk = document.getElementById('ccDiscOk');
+  if(ccDiscOk) ccDiscOk.style.display = hasDisc ? 'block' : 'none';
+  if(document.getElementById('ccCodigo')) document.getElementById('ccCodigo').style.borderColor = hasDisc ? '#22c55e' : '';
 
-  const el=document.getElementById('ccTotals');
+  const numStyle = "font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;";
+  const el = document.getElementById('ccTotals');
   if(!el) return;
-  let html=`<div class="line"><span>Subtotal</span><span style="font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;">${fmt(base)}</span></div>`;
-  if(hasCard) html+=`<div class="line surcharge"><span>Recargo tarjeta (5%)</span><span style="font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;">+${fmt(surcharge)}</span></div>`;
-  if(hasDisc) html+=`<div class="line discount"><span>Descuento código (5%)</span><span style="font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;">-${fmt(disc)}</span></div>`;
-  html+=`<div class="line total"><span>Total</span><span style="font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;">${fmt(total)}</span></div>`;
-  el.innerHTML=html;
+  let html = `<div class="line"><span>Subtotal</span><span style="${numStyle}">${fmt(base)}</span></div>`;
+  if(hasCard) html += `<div class="line surcharge"><span>Recargo tarjeta (5%)</span><span style="${numStyle}">+${fmt(surcharge)}</span></div>`;
+  if(hasDisc) html += `<div class="line discount"><span>Descuento código (5%)</span><span style="${numStyle}">-${fmt(disc)}</span></div>`;
+  if(envioCosto > 0) html += `<div class="line"><span>Envío (${envioInfo.label})</span><span style="${numStyle}">+${fmt(envioCosto)}</span></div>`;
+  html += `<div class="line total"><span>Total</span><span style="${numStyle}">${fmt(total)}</span></div>`;
+  el.innerHTML = html;
+
+  // Deshabilitar el botón confirmar si está fuera de alcance
+  const btnSub = document.querySelector('#cartCheckoutOverlay .btn-sub');
+  if(btnSub){
+    if(envioInfo && envioInfo.outOfRange){
+      btnSub.disabled = true;
+      btnSub.style.opacity = '.5';
+      btnSub.style.cursor = 'not-allowed';
+    } else {
+      btnSub.disabled = false;
+      btnSub.style.opacity = '';
+      btnSub.style.cursor = '';
+    }
+  }
 }
 
 function submitCartCheckout(){
-  const nom=(document.getElementById('ccNom')?.value||'').trim();
+  const nom = (document.getElementById('ccNom')?.value||'').trim();
   if(!nom){alert('Por favor ingresá tu nombre y apellido.');document.getElementById('ccNom').focus();return;}
-  const pago=document.getElementById('ccPago')?.value||'';
-  const codigo=(document.getElementById('ccCodigo')?.value||'').trim().toUpperCase();
-  const obs=(document.getElementById('ccObs')?.value||'').trim();
-  const envioDir=document.getElementById('ccEnvioDir')?.checked;
-  const direccion=(document.getElementById('ccDireccion')?.value||'').trim();
-  const hasDisc=codigo===DISCOUNT_CODE;
-  const hasCard=(pago==='debito'||pago==='credito');
-  const base=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const surcharge=hasCard?Math.round(base*0.05):0;
-  const sub=base+surcharge;
-  const disc=hasDisc?Math.round(sub*0.05):0;
-  const total=sub-disc;
+
+  const envioDir = document.getElementById('ccEnvioDir')?.checked;
+  const cp = (document.getElementById('ccCP')?.value||'').trim();
+  const direccion = (document.getElementById('ccDireccion')?.value||'').trim();
+
+  // Validación de envío a domicilio
+  if(envioDir){
+    if(envioInfo && envioInfo.outOfRange){
+      alert('La dirección está fuera del alcance de envío. Cambiá a "Retiro con el vendedor" o probá otro código postal.');
+      return;
+    }
+    if(!cp){alert('Ingresá tu código postal para calcular el envío.');document.getElementById('ccCP').focus();return;}
+    if(!direccion){alert('Ingresá la dirección completa para el envío.');document.getElementById('ccDireccion').focus();return;}
+  }
+
+  const pago = document.getElementById('ccPago')?.value||'';
+  const codigo = (document.getElementById('ccCodigo')?.value||'').trim().toUpperCase();
+  const obs = (document.getElementById('ccObs')?.value||'').trim();
+  const hasDisc = codigo===DISCOUNT_CODE;
+  const hasCard = (pago==='debito'||pago==='credito');
+  const base = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const surcharge = hasCard ? Math.round(base*0.05) : 0;
+  const sub = base + surcharge;
+  const disc = hasDisc ? Math.round(sub*0.05) : 0;
+  const envioCosto = (envioDir && envioInfo && !envioInfo.outOfRange) ? envioInfo.costo : 0;
+  const total = sub - disc + envioCosto;
 
   let msg='¡Hola! Quiero hacer el siguiente pedido:\n\n';
   cart.forEach((item,i)=>{
@@ -2135,17 +2266,32 @@ function submitCartCheckout(){
   if(pago==='transferencia') msg+='🏦 *Alias MP:* juan.ballester.mp1\n';
   if(hasCard) msg+='⚠️ *Recargo tarjeta (5%):* +'+fmt(surcharge)+'\n';
   if(hasDisc) msg+='🎟️ *Descuento código (5%):* -'+fmt(disc)+'\n';
-  msg+=`💰 *Total a pagar:* ${fmt(total)}\n`;
-  if(envioDir && direccion){ msg+=`🚚 *Dirección de envío:* ${direccion}\n`; }
-  else if(envioDir){ msg+='🚚 *Envío:* A domicilio (a coordinar)\n'; }
-  else { msg+='🤝 *Envío:* Coordinar con el vendedor\n'; }
-  if(obs) msg+=`📝 *Notas:* ${obs}\n`;
+
+  // Detalle de envío
+  if(envioDir){
+    msg+='\n🚚 *Envío a domicilio*\n';
+    msg+=`   📍 *Dirección:* ${direccion}\n`;
+    msg+=`   📮 *Código postal:* ${cp}\n`;
+    if(envioInfo && !envioInfo.outOfRange){
+      msg+=`   🛣️ *Distancia:* ~${envioInfo.km.toFixed(0)} km (${envioInfo.label})\n`;
+      msg+=`   💵 *Costo de envío:* ${fmt(envioInfo.costo)}\n`;
+    } else {
+      msg+='   ⚠️ *Costo de envío:* a coordinar\n';
+    }
+    msg+='   ⏱️ *Plazo:* hasta 5 días hábiles\n';
+  } else {
+    msg+='\n🤝 *Entrega:* Retiro con el vendedor (sin costo, a coordinar por WhatsApp)\n';
+  }
+
+  msg+=`\n💰 *TOTAL A PAGAR: ${fmt(total)}*\n`;
+  if(obs) msg+=`\n📝 *Notas:* ${obs}\n`;
   msg+='\n¡Gracias!';
 
   window.open('https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(msg),'_blank');
   closeCartCheckout();
   cart=[];
   updateCartUI();
+  envioInfo = null;
   const t=document.getElementById('toast');
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3500);
@@ -2506,15 +2652,17 @@ function submitCart(){
       <label>Envío *</label>
       <div class="cc-radio-group">
         <label class="cc-radio-row">
-          <input type="radio" name="ccEnvio" id="ccEnvioDir" value="direccion" onchange="toggleCcEnvio()">
-          <span class="label">🚚 Envío a domicilio<span class="meta">Con costo · a coordinar por WhatsApp</span></span>
+          <input type="radio" name="ccEnvio" id="ccEnvioCoord" value="retiro" onchange="toggleCcEnvio()" checked>
+          <span class="label">🤝 Retiro con el vendedor<span class="meta">Sin costo · coordinás directamente por WhatsApp</span></span>
         </label>
         <label class="cc-radio-row">
-          <input type="radio" name="ccEnvio" id="ccEnvioCoord" value="coordinar" onchange="toggleCcEnvio()" checked>
-          <span class="label">🤝 Coordinar con el vendedor<span class="meta">Retiro o entrega a definir por WhatsApp</span></span>
+          <input type="radio" name="ccEnvio" id="ccEnvioDir" value="domicilio" onchange="toggleCcEnvio()">
+          <span class="label">🚚 Envío a domicilio<span class="meta">Hasta 5 días hábiles · costo según distancia</span></span>
         </label>
       </div>
       <div id="ccDireccionField" class="cc-direccion" style="display:none;">
+        <input type="text" id="ccCP" placeholder="Código postal (ej: 1425)" maxlength="4" inputmode="numeric" autocomplete="postal-code" oninput="checkCP(this.value)">
+        <div id="ccCPStatus" class="cc-cp-status"></div>
         <input type="text" id="ccDireccion" placeholder="Calle, número, piso, ciudad..." autocomplete="street-address">
       </div>
     </div>
