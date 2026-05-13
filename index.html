@@ -89,9 +89,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .product-info{padding:20px;flex:1;display:flex;flex-direction:column;}
 .product-brand{font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-dark);margin-bottom:6px;}
 .product-name{font-family:'Bebas Neue',sans-serif;font-size:23px;letter-spacing:.3px;color:var(--dark);margin-bottom:8px;line-height:1.1;}
-.product-desc{display:none;}
-/* Si en algún momento querés mostrarlas otra vez, reemplazá la línea de arriba por:
-   .product-desc{font-size:13.5px;color:#666;line-height:1.55;margin-bottom:14px;flex:1;} */
+.product-desc{font-size:13.5px;color:#666;line-height:1.55;margin-bottom:14px;}
+/* Chevron de toggle: solo en mobile */
+.desc-chev{display:none;font-size:.7em;color:#999;margin-left:6px;transition:transform .2s;vertical-align:middle;}
 
 /* discount badge */
 .disc-badge{display:inline-block;background:#e8f5c8;color:var(--accent-dark);font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px;margin-bottom:10px;}
@@ -104,7 +104,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .flavour-select{width:100%;padding:9px 12px;margin-bottom:12px;background:var(--offwhite);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;cursor:pointer;transition:border-color .2s;}
 .flavour-select:focus{border-color:var(--accent-dark);}
 
-.price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;}
+.price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;margin-top:auto;}
 .price-now{font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;font-size:23px;font-weight:700;color:var(--dark);letter-spacing:-.5px;}
 .price-old{font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:#999;text-decoration:line-through;}
 
@@ -197,6 +197,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .product-card{content-visibility:auto;contain-intrinsic-size:480px;}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes descFade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @keyframes wapulse{0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.4)}50%{box-shadow:0 4px 28px rgba(37,211,102,.7),0 0 0 6px rgba(37,211,102,.1)}}
 
 /* ===== Tablet ===== */
@@ -216,6 +217,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .nav-toggle{display:none;}
   .nav-links{display:none;}
   .sidebar-nav-mobile{display:block;}
+
+  /* Descripción colapsada en mobile (toggle al tap del nombre) */
+  .product-desc{display:none;}
+  .product-card.desc-open .product-desc{display:block;animation:descFade .2s ease;}
+  .desc-chev{display:inline-block;}
+  .product-name{cursor:pointer;}
+  .product-card.desc-open .desc-chev{transform:rotate(180deg);}
 
   .hero{padding:96px 20px 60px;min-height:auto;}
   .hero-actions{gap:10px;}
@@ -266,8 +274,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 
   .section{padding:40px 16px;}
   .section-title{font-size:clamp(30px,7vw,40px);}
-  .products-grid{grid-template-columns:1fr;gap:16px;}
-  #grid.cols-2,#grid.cols-3{grid-template-columns:1fr;}
+  /* Default sin clase: 1 col. Si el usuario elige cols-X, se respeta. */
+  .products-grid{grid-template-columns:1fr;gap:14px;}
+  /* En mobile chico achicamos un poco las cards de 3 cols para que respiren */
+  #grid.cols-3{gap:8px;}
+  #grid.cols-3 .product-img-wrap{height:130px;padding:8px;}
+  #grid.cols-3 .product-info{padding:10px;}
+  #grid.cols-3 .product-name{font-size:15px;}
+  #grid.cols-3 .price-now{font-size:16px;}
   .toolbar-row{gap:8px;}
   .toolbar-count{font-size:12.5px;}
   .discount-banner{padding:18px 16px;}
@@ -304,10 +318,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 #grid.cols-3{grid-template-columns:repeat(3,1fr);}
 #grid.cols-auto{grid-template-columns:repeat(auto-fill,minmax(270px,1fr));}
 
-/* On mobile default to 1 col */
-@media(max-width:600px){
-  #grid.cols-3{grid-template-columns:repeat(2,1fr);}
-}
+/* (removido el override que forzaba cols-3 -> 2 cols en mobile.
+   Ahora si el usuario elige 3 columnas se respeta a cualquier tamaño.) */
 
 
 
@@ -575,7 +587,7 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
     <span class="bolt-big">⚡</span>
     <div class="discount-text">
       <h3>¿Sos de un grupo grande?</h3>
-      <p>Ingresá tu código de descuento al encargar y recibís un 5% de descuento sobre el total de tu pedido.</p>
+      <p>Ingresá tu código de descuento al encargar y obtené hasta un 15% off sobre el total de tu pedido.</p>
     </div>
   </div>
 
@@ -1362,7 +1374,7 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
     <div class="product-desc">15g proteína por unidad. Cereales integrales, sin azúcares agregados. Caja de 10 barras energéticas.</div>
     <div class="flavours-label">Sabor</div>
     <select class="flavour-select" id="fl-int"><option>Maní Chocolate</option><option>Post Maravillas</option><option>Banana Chocolate</option><option>Frutilla Chocolate</option></select>
-    <div class="price-row"><span class="price-now">$17.000</span></div>
+    <div class="price-row"><span class="price-now">$19.000</span></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           <span style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">Cantidad</span>
           <div style="display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
@@ -1383,12 +1395,12 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
     <div class="product-name">Muecas x16 / Proteína x16</div>
     <div class="product-desc">Barras de cereales sin azúcar agregada. Caja de 16 unidades. Versión clásica o alta en proteínas disponible.</div>
     <div class="variants" id="v-mu">
-      <button class="var-btn sel" onclick="selVar('mu','Clásica','$18.800','',this)">Clásica</button>
+      <button class="var-btn sel" onclick="selVar('mu','Clásica','$20.000','',this)">Clásica</button>
       <button class="var-btn" onclick="selVar('mu','Proteína','$25.000','',this)">Proteína</button>
     </div>
     <div class="flavours-label">Sabor</div>
     <select class="flavour-select" id="fl-mu"><option>Pasas y Arándanos</option><option>Manzana y Arándanos</option><option>Cacao y Avellanas</option><option>Banana y Dulce de Leche</option></select>
-    <div class="price-row"><span class="price-now" id="pn-mu">$18.800</span><span class="price-old" id="po-mu"></span></div>
+    <div class="price-row"><span class="price-now" id="pn-mu">$20.000</span><span class="price-old" id="po-mu"></span></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           <span style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">Cantidad</span>
           <div style="display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
@@ -1455,7 +1467,7 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
     <div class="product-desc">Barras naturales de frutos secos, frutas deshidratadas y semillas. Sin cocción, sin conservantes, sin gluten. Energía natural pura.</div>
     <div class="flavours-label">Sabor</div>
     <select class="flavour-select" id="fl-cr"><option>Maní y Cacao</option><option>Coco y Almendras</option><option>Durazno y Almendras</option><option>Frutilla y Semillas</option><option>Mango y Coco</option></select>
-    <div class="price-row"><span class="price-now">$18.500</span></div>
+    <div class="price-row"><span class="price-now">$20.000</span></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           <span style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">Cantidad</span>
           <div style="display:flex;align-items:center;gap:0;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;">
@@ -1662,7 +1674,7 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
   <div class="steps">
     <div class="step"><div class="step-num">01</div><h3>Elegí tu Producto</h3><p>Explorá el catálogo, seleccioná el tamaño y sabor que más te conviene y tocá "Encargar".</p></div>
     <div class="step"><div class="step-num">02</div><h3>Completá el Formulario</h3><p>Ingresá tu nombre, teléfono y elegí tu método de pago. ¡Solo toma un minuto!</p></div>
-    <div class="step highlight"><div class="step-num">03</div><h3>¿Tenés código de descuento?</h3><p>Ingresá tu código de descuento en el formulario y recibís un 5% off.</p></div>
+    <div class="step highlight"><div class="step-num">03</div><h3>¿Tenés código de descuento?</h3><p>Ingresá tu código en el formulario y obtené hasta un 15% off.</p></div>
     <div class="step"><div class="step-num">04</div><h3>Confirmamos por WhatsApp</h3><p>Te respondemos para confirmar el pedido y despejar cualquier duda antes de que pagues.</p></div>
     <div class="step"><div class="step-num">05</div><h3>Pagás y Recibís</h3><p>Si transferís o usás saldo de MP, te damos el alias. Si pagás con tarjeta, te mandamos el link de Mercado Pago. Luego coordinamos la entrega.</p></div>
   </div>
@@ -1763,7 +1775,7 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
           <span id="sumSurcharge" style="font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:#f59e0b;font-weight:600;"></span>
         </div>
         <div id="rowDiscount" style="display:none;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:13px;color:#22c55e;font-weight:700;">Descuento código (5%)</span>
+          <span id="discLabel" style="font-size:13px;color:#22c55e;font-weight:700;">Descuento código</span>
           <span id="sumDiscount" style="font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;font-size:13px;color:#22c55e;font-weight:700;"></span>
         </div>
         <div style="border-top:1px solid #e0e0dc;margin:8px 0;"></div>
@@ -1785,6 +1797,16 @@ input[type=number].prod-qty::-webkit-outer-spin-button,input[type=number].prod-q
 <div class="toast" id="toast">✅ ¡Pedido enviado! Te contactamos pronto.</div>
 
 <script>
+// Códigos de descuento. Para agregar uno nuevo: 'CODIGO': porcentaje
+const DISCOUNT_CODES = {
+  'LOSMORUGBY': 5,
+  'PASIONEVENTOS': 15
+};
+function getDiscountPct(code){
+  if(!code) return 0;
+  return DISCOUNT_CODES[String(code).trim().toUpperCase()] || 0;
+}
+// Compatibilidad con código viejo (en caso de quedar referencias sueltas)
 const DISCOUNT_CODE = 'LOSMORUGBY';
 const DISCOUNT_PCT = 5;
 const WA_NUMBER = '541165201776';
@@ -1925,9 +1947,16 @@ function showPaymentInfo(sel) {
 
 function checkCode(input){
   const val=input.value.trim().toUpperCase();
+  const pct=getDiscountPct(val);
   const el=document.getElementById('discApplied');
-  if(val===DISCOUNT_CODE){el.style.display='block';input.style.borderColor='#22c55e';}
-  else{el.style.display='none';input.style.borderColor='';}
+  if(pct>0){
+    el.textContent='✅ ¡Código aplicado! '+pct+'% de descuento';
+    el.style.display='block';
+    input.style.borderColor='#22c55e';
+  } else {
+    el.style.display='none';
+    input.style.borderColor='';
+  }
   updateModalSummary();
 }
 
@@ -1941,10 +1970,11 @@ function updateModalSummary(){
   const pago=document.getElementById('iPago')?document.getElementById('iPago').value:'';
   const hasCard=(pago==='debito'||pago==='credito');
   const code=document.getElementById('iCodigo')?document.getElementById('iCodigo').value.trim().toUpperCase():'';
-  const hasDisc=code===DISCOUNT_CODE;
+  const pct=getDiscountPct(code);
+  const hasDisc=pct>0;
   const surcharge=hasCard?Math.round(base*0.05):0;
   const sub=base+surcharge;
-  const disc=hasDisc?Math.round(sub*0.05):0;
+  const disc=hasDisc?Math.round(sub*pct/100):0;
   const total=sub-disc;
   const fmt=n=>'$'+Math.round(n).toLocaleString('es-AR');
 
@@ -1961,6 +1991,8 @@ function updateModalSummary(){
   if(ss) ss.textContent=hasCard?'+'+fmt(surcharge):'';
   if(rd) rd.style.display=hasDisc?'flex':'none';
   if(sd) sd.textContent=hasDisc?'-'+fmt(disc):'';
+  const dl=document.getElementById('discLabel');
+  if(dl) dl.textContent='Descuento código ('+pct+'%)';
   if(st) st.textContent=fmt(total);
   if(ps) ps.style.display='block';
 }
@@ -2033,7 +2065,8 @@ function submitOrder(){
   const size=document.getElementById('fgSize').style.display!=='none'?document.getElementById('iSize').value:'';
   const flavour=document.getElementById('fgFlavour').style.display!=='none'?document.getElementById('iFlavour').value:'';
   const qty=parseInt(document.getElementById('iQty')?.value)||1;
-  const hasDiscount=codigo===DISCOUNT_CODE;
+  const discPct=getDiscountPct(codigo);
+  const hasDiscount=discPct>0;
 
   // Envío
   const envioDir=document.getElementById('iEnvioDir')?.checked;
@@ -2057,7 +2090,7 @@ function submitOrder(){
     msg+='💰 *Total a pagar:* '+totalEl.textContent+'\n';
   }
   if(hasDiscount){
-    msg+='🎟️ *Código descuento aplicado:* -5%\n';
+    msg+='🎟️ *Código descuento aplicado:* '+codigo+' (-'+discPct+'%)\n';
   }
   // Envío
   if(envioDir && direccion){ msg+='🚚 *Dirección de envío:* '+direccion+'\n'; }
@@ -2215,15 +2248,19 @@ function updateCcTotals(){
   const pago = document.getElementById('ccPago')?.value||'';
   const codigo = document.getElementById('ccCodigo')?.value.trim().toUpperCase()||'';
   const hasCard = (pago==='debito'||pago==='credito');
-  const hasDisc = codigo===DISCOUNT_CODE;
+  const discPct = getDiscountPct(codigo);
+  const hasDisc = discPct>0;
   const surcharge = hasCard ? Math.round(base*0.05) : 0;
   const sub = base + surcharge;
-  const disc = hasDisc ? Math.round(sub*0.05) : 0;
+  const disc = hasDisc ? Math.round(sub*discPct/100) : 0;
   const envioCosto = (envioInfo && !envioInfo.outOfRange) ? envioInfo.costo : 0;
   const total = sub - disc + envioCosto;
 
   const ccDiscOk = document.getElementById('ccDiscOk');
-  if(ccDiscOk) ccDiscOk.style.display = hasDisc ? 'block' : 'none';
+  if(ccDiscOk){
+    ccDiscOk.textContent = '✅ ¡Código aplicado! '+discPct+'% de descuento';
+    ccDiscOk.style.display = hasDisc ? 'block' : 'none';
+  }
   if(document.getElementById('ccCodigo')) document.getElementById('ccCodigo').style.borderColor = hasDisc ? '#22c55e' : '';
 
   const numStyle = "font-family:'Inter',-apple-system,sans-serif;font-variant-numeric:tabular-nums;";
@@ -2231,7 +2268,7 @@ function updateCcTotals(){
   if(!el) return;
   let html = `<div class="line"><span>Subtotal</span><span style="${numStyle}">${fmt(base)}</span></div>`;
   if(hasCard) html += `<div class="line surcharge"><span>Recargo tarjeta (5%)</span><span style="${numStyle}">+${fmt(surcharge)}</span></div>`;
-  if(hasDisc) html += `<div class="line discount"><span>Descuento código (5%)</span><span style="${numStyle}">-${fmt(disc)}</span></div>`;
+  if(hasDisc) html += `<div class="line discount"><span>Descuento código (${discPct}%)</span><span style="${numStyle}">-${fmt(disc)}</span></div>`;
   if(envioCosto > 0) html += `<div class="line"><span>Envío (${envioInfo.label})</span><span style="${numStyle}">+${fmt(envioCosto)}</span></div>`;
   html += `<div class="line total"><span>Total</span><span style="${numStyle}">${fmt(total)}</span></div>`;
   el.innerHTML = html;
@@ -2272,12 +2309,13 @@ function submitCartCheckout(){
   const pago = document.getElementById('ccPago')?.value||'';
   const codigo = (document.getElementById('ccCodigo')?.value||'').trim().toUpperCase();
   const obs = (document.getElementById('ccObs')?.value||'').trim();
-  const hasDisc = codigo===DISCOUNT_CODE;
+  const discPct = getDiscountPct(codigo);
+  const hasDisc = discPct>0;
   const hasCard = (pago==='debito'||pago==='credito');
   const base = cart.reduce((s,i)=>s+i.price*i.qty,0);
   const surcharge = hasCard ? Math.round(base*0.05) : 0;
   const sub = base + surcharge;
-  const disc = hasDisc ? Math.round(sub*0.05) : 0;
+  const disc = hasDisc ? Math.round(sub*discPct/100) : 0;
   const envioCosto = (envioDir && envioInfo && !envioInfo.outOfRange) ? envioInfo.costo : 0;
   const total = sub - disc + envioCosto;
 
@@ -2293,7 +2331,7 @@ function submitCartCheckout(){
   msg+=`💳 *Pago:* ${pago||'A confirmar'}\n`;
   if(pago==='transferencia') msg+='🏦 *Alias MP:* juan.ballester.mp1\n';
   if(hasCard) msg+='⚠️ *Recargo tarjeta (5%):* +'+fmt(surcharge)+'\n';
-  if(hasDisc) msg+='🎟️ *Descuento código (5%):* -'+fmt(disc)+'\n';
+  if(hasDisc) msg+='🎟️ *Descuento código '+codigo+' ('+discPct+'%):* -'+fmt(disc)+'\n';
 
   // Detalle de envío
   if(envioDir){
@@ -2338,15 +2376,30 @@ function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'});}
 
 /* ---------- Init: alt text, data-name, lazy load, listeners ---------- */
 document.addEventListener('DOMContentLoaded',function(){
-  // Alt text + lazy load en cards
+  // Alt text + lazy load + chevron de descripción en cards
   document.querySelectorAll('.product-card').forEach(card=>{
     const brand=(card.querySelector('.product-brand')?.textContent||'').trim();
-    const name=(card.querySelector('.product-name')?.textContent||'').trim();
+    const nameEl=card.querySelector('.product-name');
+    const desc=card.querySelector('.product-desc');
+    const name=(nameEl?.textContent||'').trim();
     const img=card.querySelector('img');
     if(img){
       if(!img.alt) img.alt=(brand+' '+name).trim()||'Producto FUEL';
       img.loading='lazy';
       img.decoding='async';
+    }
+    // Solo agrego el chevron si la card tiene una descripción real (no vacía)
+    if(nameEl && desc && desc.textContent.trim()){
+      const chev=document.createElement('span');
+      chev.className='desc-chev';
+      chev.textContent='▾';
+      chev.setAttribute('aria-hidden','true');
+      nameEl.appendChild(chev);
+      // Tap en el nombre del producto: toggle de descripción (sólo en mobile)
+      nameEl.addEventListener('click',e=>{
+        if(window.innerWidth>768) return;
+        card.classList.toggle('desc-open');
+      });
     }
   });
 
@@ -2536,9 +2589,13 @@ function updateCartUI(){
 }
 
 function applyCartCode(input){
-  const ok=input.value.trim().toUpperCase()===DISCOUNT_CODE;
+  const pct=getDiscountPct(input.value);
+  const ok=pct>0;
   const el=document.getElementById('cartCodeOk');
-  if(el) el.style.display=ok?'block':'none';
+  if(el){
+    el.textContent='✅ ¡Código aplicado! '+pct+'% de descuento';
+    el.style.display=ok?'block':'none';
+  }
   input.style.borderColor=ok?'#22c55e':'';
   updateCartSummary();
 }
@@ -2548,18 +2605,22 @@ function updateCartSummary(){
   const base=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const pago=document.getElementById('cartPago')?document.getElementById('cartPago').value:'';
   const hasCard=(pago==='debito'||pago==='credito');
-  const hasDisc=document.getElementById('cartCode')&&document.getElementById('cartCode').value.trim().toUpperCase()===DISCOUNT_CODE;
+  const code=document.getElementById('cartCode')?document.getElementById('cartCode').value:'';
+  const discPct=getDiscountPct(code);
+  const hasDisc=discPct>0;
 
   const surcharge=hasCard?Math.round(base*0.05):0;
   const sub=base+surcharge;
-  const disc=hasDisc?Math.round(sub*0.05):0;
+  const disc=hasDisc?Math.round(sub*discPct/100):0;
   const total=sub-disc;
 
   document.getElementById('cartBase').textContent=fmt(base);
   const lS=document.getElementById('cartLineSurcharge');
   const lD=document.getElementById('cartLineDiscount');
+  const lDLabel=document.getElementById('cartDiscountLabel');
   if(lS) lS.style.display=hasCard?'flex':'none';
   if(lD) lD.style.display=hasDisc?'flex':'none';
+  if(lDLabel) lDLabel.textContent='Descuento código ('+discPct+'%)';
   document.getElementById('cartSurcharge').textContent=hasCard?'+'+fmt(surcharge):'';
   document.getElementById('cartDiscount').textContent=hasDisc?'-'+fmt(disc):'';
   document.getElementById('cartTotal').textContent=fmt(total);
@@ -2582,11 +2643,12 @@ function submitCart(){
   const pago=document.getElementById('cartPago').value;
   const code=document.getElementById('cartCode').value.trim().toUpperCase();
   const hasCard=(pago==='debito'||pago==='credito');
-  const hasDisc=code===DISCOUNT_CODE;
+  const discPct=getDiscountPct(code);
+  const hasDisc=discPct>0;
   const base=cart.reduce((s,i)=>s+i.price*i.qty,0);
   const surcharge=hasCard?Math.round(base*0.05):0;
   const sub=base+surcharge;
-  const disc=hasDisc?Math.round(sub*0.05):0;
+  const disc=hasDisc?Math.round(sub*discPct/100):0;
   const total=sub-disc;
 
   let msg='¡Hola! Quiero hacer el siguiente pedido:\n\n';
@@ -2598,7 +2660,7 @@ function submitCart(){
   });
   msg+='\n';
   if(hasCard) msg+=`⚠️ *Recargo tarjeta (5%):* +${fmt(surcharge)}\n`;
-  if(hasDisc) msg+=`🎟️ *Descuento código (5%):* -${fmt(disc)}\n`;
+  if(hasDisc) msg+=`🎟️ *Descuento código ${code} (${discPct}%):* -${fmt(disc)}\n`;
   msg+=`💰 *Total a pagar:* ${fmt(total)}\n`;
   msg+='\n💳 *Método de pago:* '+(pago||'A confirmar')+'\n';
   if(pago==='transferencia') msg+='🏦 *Alias MP:* juan.ballester.mp1\n';
@@ -2631,7 +2693,7 @@ function submitCart(){
     <div id="cartSummary" style="display:none;">
       <div class="cart-summary-line" id="cartLineBase"><span>Subtotal</span><span id="cartBase"></span></div>
       <div class="cart-summary-line surcharge" id="cartLineSurcharge" style="display:none;"><span>Recargo tarjeta (5%)</span><span id="cartSurcharge"></span></div>
-      <div class="cart-summary-line discount" id="cartLineDiscount" style="display:none;"><span>Descuento código (5%)</span><span id="cartDiscount"></span></div>
+      <div class="cart-summary-line discount" id="cartLineDiscount" style="display:none;"><span id="cartDiscountLabel">Descuento código</span><span id="cartDiscount"></span></div>
       <div class="cart-total-line"><span>Total a pagar</span><span id="cartTotal"></span></div>
     </div>
     <div class="cart-code">
